@@ -10,4 +10,4 @@ COPY --from=builder /home/gradle/Member/build/libs/*.jar app.jar
 
 EXPOSE 8081
 
-ENTRYPOINT ["java", "-jar", "./app.jar", "-Dspring-boot.run.arguments=—SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}, —SPRING_DATABASE_USERNAME=${SPRING_DATABASE_USERNAME}, —SPRING_DATABASE_PASSWORD=${SPRING_DATABASE_PASSWORD}"]]
+ENTRYPOINT ["java", "-jar", "./app.jar"]
