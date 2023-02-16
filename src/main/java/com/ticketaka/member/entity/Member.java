@@ -43,6 +43,7 @@ public class Member {
     @Column(name = "member_isadult", nullable = false )
     private Boolean isadult;
 
+    @Column(name = "member_role",nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 

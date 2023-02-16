@@ -82,8 +82,10 @@ public class MemberServiceImpl implements MemberService{
     @Override
     @Transactional
     public ResponseEntity<String> checkDuplicateMember(String email) {
-        // Optional 람다로 바꿔봅시다,
-        if(memberRepository.findByEmail(email)!=null){
+        // Optional 람다로 바꿔봅시다
+        log.info("email : {} ", email);
+        Optional<Member> byEmail = memberRepository.findByEmail(email);
+        if(byEmail.isEmpty()){
             return ResponseEntity.ok()
                     .body("중복안됨");
         }
@@ -91,10 +93,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public ResponseEntity<InfoResponseDto> getInfo(Map<String, String> header) {
-        // accessToken 에서 memberId 를 가져오고
-        Long memberId = jwtUtils.getMemberIdFromHeader(header);
-        log.info("memberId {}", memberId);
+    public ResponseEntity<InfoResponseDto> getInfo(Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(NoSuchElementException::new);// 없을 때 예외를 떤짐
         log.info("member Info {}", member.toString());
         // memberId 로 InfoResponseDto 을 만들어 반환

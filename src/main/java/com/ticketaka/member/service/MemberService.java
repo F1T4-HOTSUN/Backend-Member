@@ -15,6 +15,6 @@ public interface MemberService {
 
     ResponseEntity<String> checkDuplicateMember(String email);
 
-    ResponseEntity<InfoResponseDto> getInfo(Map<String,String> header);
+    ResponseEntity<InfoResponseDto> getInfo(Long memberId);
 
 }

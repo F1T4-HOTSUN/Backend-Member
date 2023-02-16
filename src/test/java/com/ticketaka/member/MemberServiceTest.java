@@ -41,7 +41,7 @@ public class MemberServiceTest {
 
     @Test
     public void 멤버상세정보_테스트(){
-        memberService.getInfo()
+        memberService.getInfo(1L);
     }
 
 }

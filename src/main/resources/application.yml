@@ -8,15 +8,13 @@ spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     driver-class-name: org.mariadb.jdbc.Driver
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    username: ${SPRING_DATABASE_USERNAME}
+    password: ${SPRING_DATABASE_PASSWORD}
   jpa:
-    database: mysql  # 추가 해준 부분
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect # 추가 해준 부분
     open-in-view: false
     generate-ddl: true
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
 server:
   port: ${SERVER_PORT}

@@ -27,16 +27,6 @@ public class JwtUtils {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
-//    public TokenInfo generateToken(Long memberId){
-//        String accessToken = generateAccessToken(memberId);
-//        String refreshToken = generateRefreshToken();
-//
-//        return TokenInfo.builder()
-//                .grantType("Bearer")
-//                .accessToken(accessToken)
-//                .refreshToken(refreshToken)
-//                .build();
-//    }
 
     public String generateRefreshToken() {
         long now = (new Date(System.currentTimeMillis())).getTime();
