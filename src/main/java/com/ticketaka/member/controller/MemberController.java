@@ -34,19 +34,10 @@ public class MemberController {
         return memberService.checkDuplicateMember(email.get("email"));
     }
 
-//    @PostMapping(path = "/logout",headers = "HEADER")
-//    public ResponseEntity<String> logout(@RequestHeader Map<String, String> header){
-//        return memberService.logout(header);
-//
-//    }
-    @GetMapping(path="/info")
+    @PostMapping(path="/info")
     public ResponseEntity<InfoResponseDto> info(@RequestBody Long memberId){
         log.info("called Info");
         return memberService.getInfo(memberId);
     }
 
-//    @GetMapping(path = "/adult",headers = "HEADER")
-//    public String checkAdult(@RequestHeader Map<String, String> header){
-//        return "adult";
-//    }
 }
