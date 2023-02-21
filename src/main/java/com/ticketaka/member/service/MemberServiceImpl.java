@@ -3,18 +3,16 @@ package com.ticketaka.member.service;
 import com.ticketaka.member.dto.request.LoginRequestDto;
 import com.ticketaka.member.dto.request.SignupRequestDto;
 import com.ticketaka.member.dto.response.InfoResponseDto;
+import com.ticketaka.member.dto.response.LoginResponseDto;
 import com.ticketaka.member.entity.Member;
-import com.ticketaka.member.jwt.JwtUtils;
 import com.ticketaka.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -24,8 +22,6 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService{
 
     private final MemberRepository memberRepository;
-    private final JwtUtils jwtUtils;
-    private final RedisService redisService;
     @Override
     @Transactional
     public ResponseEntity<String> signUp(SignupRequestDto dto) {
@@ -40,8 +36,8 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    @Transactional
-    public ResponseEntity<String> login(LoginRequestDto dto) {
+    @Transactional(readOnly = true)
+    public ResponseEntity<LoginResponseDto> login(LoginRequestDto dto) {
         Optional<Member> member = memberRepository.findByEmail(dto.getEmail());
         if(!member.isPresent()){
             //없을 때 예외처리
@@ -49,38 +45,16 @@ public class MemberServiceImpl implements MemberService{
         // 있을때 정상 로직 처리 ->
         // access token 발급 및 refresh token 발급(따로 발급받는걸로) Refresh 토큰을 Redis 에 저장
         // 3. 인증 정보를 기반으로 JWT 토큰 (access, refresh) 생성
+        // 이 로직을 auth 서버에서 진행하도록 변환
+
         Long memberId =  member.get().getId();
-        String accessToken = jwtUtils.generateAccessToken(memberId);
-        String refreshToken = jwtUtils.generateRefreshToken();
+        LoginResponseDto responseDTO = LoginResponseDto.builder().memberId(memberId).build();
+        return ResponseEntity.ok().body(responseDTO);
 
-
-        //4. refresh 토큰을 Redis 에 저장 key - refreshToken value- memberId(String)
-        redisService.setValues(refreshToken,memberId);
-
-        // 5. 이후 토큰값을 헤더에 담아서 반환
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("X-Authorization",accessToken);
-        headers.add("R-Authorization", refreshToken);
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body("Success");
     }
 
-//    @Override
-//    public ResponseEntity<String> logout(Map<String, String> header) {
-//        // accessToken 을 SpringSecurityContext 에서 삭제 및 RefreshToken 을 Redis 에서 삭제
-//        String accessToken = header.get("X-Authorization");
-//        String refreshToken = header.get("R-Authorization");
-//        Authentication authentication = jwtUtils.getAuthentication(accessToken);
-//        redisService.deleteValue(refreshToken);
-//        SecurityContextHolder.clearContext();
-//
-//        return null;
-//    }
-
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public ResponseEntity<String> checkDuplicateMember(String email) {
         // Optional 람다로 바꿔봅시다
         log.info("email : {} ", email);
@@ -93,6 +67,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<InfoResponseDto> getInfo(Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(NoSuchElementException::new);// 없을 때 예외를 떤짐
         log.info("member Info {}", member.toString());

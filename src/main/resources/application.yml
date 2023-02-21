@@ -1,10 +1,7 @@
 jwt:
-  secret: abcdefghabcdefghabcdefghabcdefghabcdefghabcdefefeq
+
 
 spring:
-  redis:
-    host: ${REDIS_URL}
-    port: ${REDIS_PORT}
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     driver-class-name: org.mariadb.jdbc.Driver

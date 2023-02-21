@@ -4,6 +4,7 @@ package com.ticketaka.member.controller;
 import com.ticketaka.member.dto.request.LoginRequestDto;
 import com.ticketaka.member.dto.request.SignupRequestDto;
 import com.ticketaka.member.dto.response.InfoResponseDto;
+import com.ticketaka.member.dto.response.LoginResponseDto;
 import com.ticketaka.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequestDto dto){
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto dto){
         return memberService.login(dto);
     }
     @PostMapping("/signup")
