@@ -52,7 +52,7 @@ public class MemberServiceImpl implements MemberService{
     @Transactional(readOnly = true)
     public LoginResponseDto login(LoginRequestDto dto) {
         Member member = memberRepository.findByEmail(dto.getEmail()).orElseThrow(NoSuchElementException::new);
-        return LoginResponseDto.builder().memberId(member.getId()).build();
+        return LoginResponseDto.builder().memberId(member.getId()).role(member.getRole()).build();
     }
 
     @Override
