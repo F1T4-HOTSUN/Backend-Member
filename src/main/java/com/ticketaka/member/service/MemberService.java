@@ -8,8 +8,10 @@ import com.ticketaka.member.dto.response.InfoResponseDto;
 import com.ticketaka.member.dto.response.LoginResponseDto;
 import org.springframework.http.ResponseEntity;
 
+import java.sql.SQLException;
+
 public interface MemberService {
-    StatusCode signUp(SignupRequestDto dto);
+    StatusCode signUp(SignupRequestDto dto) throws SQLException;
     LoginResponseDto login(LoginRequestDto dto);
 
     StatusCode checkDuplicateMember(String email);

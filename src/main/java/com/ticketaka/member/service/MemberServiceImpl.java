@@ -12,6 +12,7 @@ import com.ticketaka.member.feign.ReservationFeignClient;
 import com.ticketaka.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,29 +30,33 @@ public class MemberServiceImpl implements MemberService{
     private final ReservationFeignClient reservationFeignClient;
     @Override
     @Transactional
-    public StatusCode signUp(SignupRequestDto dto) {
+    public StatusCode signUp(SignupRequestDto dto) throws SQLException{
         // entity 로 변경 후 save
-        try{
+//        try{
             Member member = memberRepository.save(dto.toEntity());
             String email = member.getEmail();
             Long id = member.getId();
 
-            reservationFeignClient.createMember(RsvMemberDTO
-                    .builder()
-                    .memberEmail(email)
-                    .memberId(id)
-                    .build());
+//            reservationFeignClient.createMember(RsvMemberDTO
+//                    .builder()
+//                    .memberEmail(email)
+//                    .memberId(id)
+//                    .build());
             return StatusCode.OK;
-        }catch(Exception e){
-            log.error(e.toString());
-            return StatusCode.DUPLICATE_MEMBER;
-        }
+//        }catch(DataIntegrityViolationException e){
+//            log.error(e.toString());
+//            log.info("이메일 중복 ");
+//            return StatusCode.DUPLICATE_MEMBER;
+//        }
     }
 
     @Override
     @Transactional(readOnly = true)
     public LoginResponseDto login(LoginRequestDto dto) {
         Member member = memberRepository.findByEmail(dto.getEmail()).orElseThrow(NoSuchElementException::new);
+        if (!member.getPassword().equals(dto.getPassword())) {
+            throw new NoSuchElementException();
+        }
         return LoginResponseDto.builder().memberId(member.getId()).role(member.getRole()).build();
     }
 

@@ -26,7 +26,15 @@ public class MemberController {
 
     @PostMapping("/signup")
     public BaseResponse signUp(@RequestBody SignupRequestDto dto){
-        return new BaseResponse(memberService.signUp(dto));
+        StatusCode statusCode;
+        try{
+            statusCode = memberService.signUp(dto);
+        }catch(Exception e){
+            statusCode = StatusCode.DUPLICATE_MEMBER;
+            log.info("에러코드 + {} ", statusCode.toString());
+        }
+
+        return new BaseResponse(statusCode);
     }
     @PostMapping("/login")
     public BaseResponse login(@RequestBody LoginRequestDto dto){
@@ -53,8 +61,6 @@ public class MemberController {
         }catch(NoSuchElementException e){
             return new BaseResponse(StatusCode.NO_MEBMER);
         }
-
-
     }
 
 }
