@@ -35,7 +35,7 @@ public class SignupRequestDto {
                 .phone(phone)
                 .gender(gender.equals("남")?Gender.MALE: Gender.FEMALE)
                 .role(LocalDate.now().getYear()- birth.getYear()>=19? Role.ADULT : Role.CHILD)
-                .isadult(LocalDate.now().getYear()- birth.getYear()>=19?true:false) // 지금 연도와 출생년도 비교, 19이상이면 성인
+                //.isadult(LocalDate.now().getYear()- birth.getYear()>=19?true:false) // 지금 연도와 출생년도 비교, 19이상이면 성인
                 .build();
     }
 }

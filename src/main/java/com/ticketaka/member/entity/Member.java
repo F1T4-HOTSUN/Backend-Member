@@ -40,8 +40,8 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Gender gender; // enum 으로 바꿔야겟다
 
-    @Column(name = "member_isadult", nullable = false )
-    private Boolean isadult;
+//    @Column(name = "member_isadult", nullable = false )
+//    private Boolean isadult;
 
     @Column(name = "member_role",nullable = false)
     @Enumerated(EnumType.STRING)

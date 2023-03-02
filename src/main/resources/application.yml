@@ -1,6 +1,8 @@
 jwt:
 
-
+reservation:
+  url: ${RESERVATION_URL}
+  port: ${RESERVATION_PORT}
 spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL}
