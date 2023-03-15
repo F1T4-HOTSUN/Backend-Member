@@ -1,5 +1,5 @@
-jwt:
-
+#jwt:
+#  key: "./private-key.pem"
 reservation:
   url: ${RESERVATION_URL}
   port: ${RESERVATION_PORT}
@@ -14,6 +14,6 @@ spring:
     generate-ddl: true
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
 server:
   port: ${SERVER_PORT}

@@ -1,6 +1,5 @@
 package com.ticketaka.member.service;
 
-import com.ticketaka.member.dto.RsvMemberDTO;
 import com.ticketaka.member.dto.StatusCode;
 import com.ticketaka.member.dto.request.LoginRequestDto;
 import com.ticketaka.member.dto.request.SignupRequestDto;
@@ -10,14 +9,15 @@ import com.ticketaka.member.dto.response.LoginResponseDto;
 import com.ticketaka.member.entity.Member;
 import com.ticketaka.member.feign.ReservationFeignClient;
 import com.ticketaka.member.repository.MemberRepository;
+import com.ticketaka.member.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -27,27 +27,16 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService{
 
     private final MemberRepository memberRepository;
-    private final ReservationFeignClient reservationFeignClient;
+    private final JwtUtils jwtUtils;
     @Override
     @Transactional
-    public StatusCode signUp(SignupRequestDto dto) throws SQLException{
+    public StatusCode signUp(SignupRequestDto dto){
         // entity 로 변경 후 save
-//        try{
             Member member = memberRepository.save(dto.toEntity());
             String email = member.getEmail();
             Long id = member.getId();
 
-//            reservationFeignClient.createMember(RsvMemberDTO
-//                    .builder()
-//                    .memberEmail(email)
-//                    .memberId(id)
-//                    .build());
             return StatusCode.OK;
-//        }catch(DataIntegrityViolationException e){
-//            log.error(e.toString());
-//            log.info("이메일 중복 ");
-//            return StatusCode.DUPLICATE_MEMBER;
-//        }
     }
 
     @Override
@@ -57,7 +46,11 @@ public class MemberServiceImpl implements MemberService{
         if (!member.getPassword().equals(dto.getPassword())) {
             throw new NoSuchElementException();
         }
-        return LoginResponseDto.builder().memberId(member.getId()).role(member.getRole()).build();
+        member.getId();
+        String accessToken = jwtUtils.generateAccessToken(member);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Authorization",accessToken);
+        return LoginResponseDto.builder().memberId(member.getId()).role(member.getRole()).headers(headers).build();
     }
 
     @Override
