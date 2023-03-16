@@ -11,7 +11,7 @@ import java.util.List;
 public interface ReservationFeignClient {
 
 
-    @PostMapping
+    @PostMapping("/create")
     BaseResponse reservation(@RequestHeader("memberid") Long memberId, @RequestBody ReservationDTO dto);
 
     @GetMapping("/lists/{member_id}")

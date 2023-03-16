@@ -1,5 +1,5 @@
-#jwt:
-#  key: "./private-key.pem"
+jwt:
+  key: ${PRIVATE_KEY}
 reservation:
   url: ${RESERVATION_URL}
   port: ${RESERVATION_PORT}

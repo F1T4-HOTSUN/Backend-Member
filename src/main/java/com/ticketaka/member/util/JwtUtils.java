@@ -4,6 +4,10 @@ import com.ticketaka.member.entity.Member;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -39,13 +43,13 @@ public class JwtUtils {
 //        this.key = key1
 //
 //    }
-    public JwtUtils() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        Path path = Paths.get("src/main/resources/cert/private_key_pkcs8.pem");
-        List<String> reads = Files.readAllLines(path);
-        String content = "";
-        for (String str : reads){
-            content += str+"\n";
-        }
+    public JwtUtils(@Value("${jwt.key}") String content) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+//        Path path = Paths.get("src/main/resources/cert/private_key_pkcs8.pem");
+//        List<String> reads = Files.readAllLines(path);
+//        String content = "";
+//        for (String str : reads){
+//            content += str+"\n";
+//        }
         log.info(content);
         content = content.replaceAll("\\n", "").replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "");
         log.info(content);

@@ -61,8 +61,8 @@ public class MemberController {
         return responseUtils.makeResponse(response);
     }
 
-    @PostMapping(path="/info")
-    public ResponseEntity<BaseResponse> info(@RequestBody Long memberId){
+    @PostMapping("/info")
+    public ResponseEntity<BaseResponse> info(@RequestHeader("memberid") Long memberId){
         BaseResponse response;
         try{
             InfoResponseDto info = memberService.getInfo(memberId);
