@@ -61,7 +61,7 @@ public class MemberController {
         return responseUtils.makeResponse(response);
     }
 
-    @PostMapping("/info")
+    @GetMapping("/info")
     public ResponseEntity<BaseResponse> info(@RequestHeader("memberid") Long memberId){
         BaseResponse response;
         try{
