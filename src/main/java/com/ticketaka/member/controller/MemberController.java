@@ -64,6 +64,8 @@ public class MemberController {
     @GetMapping("/info")
     public ResponseEntity<BaseResponse> info(@RequestHeader Map<String,String> header){
         String memberId = header.get("memberid");
+        log.info("===========");
+        log.info(memberId);
         BaseResponse response;
         try{
             InfoResponseDto info = memberService.getInfo(Long.parseLong(memberId));
