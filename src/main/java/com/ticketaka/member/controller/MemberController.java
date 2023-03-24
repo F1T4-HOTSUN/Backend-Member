@@ -64,6 +64,7 @@ public class MemberController {
     @GetMapping("/info")
     public ResponseEntity<BaseResponse> info(@RequestHeader Map<String,String> header){
         log.info(header.toString());
+
         String memberId = header.get("x-istio-jwt-sub");
         log.info("===========");
         log.info(memberId);
