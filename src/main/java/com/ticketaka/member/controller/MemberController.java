@@ -62,10 +62,10 @@ public class MemberController {
     }
 
     @GetMapping("/info")
-    public ResponseEntity<BaseResponse> info(@RequestHeader("memberid") Long memberId){
+    public ResponseEntity<BaseResponse> info(@RequestHeader("memberid") String memberId){
         BaseResponse response;
         try{
-            InfoResponseDto info = memberService.getInfo(memberId);
+            InfoResponseDto info = memberService.getInfo(Long.parseLong(memberId));
             response = new BaseResponse(StatusCode.OK, info);
             return responseUtils.makeResponse(response);
         }catch(NoSuchElementException e){
