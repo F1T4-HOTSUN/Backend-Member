@@ -1,5 +1,7 @@
 phases:
   install:
+    runtime-versions:
+      docker: 24
     commands:
       - echo Install Kubectl
       - echo ---------------------------------
@@ -47,5 +49,4 @@ phases:
       - AWS_ECR_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG-$CODEBUILD_BUILD_NUMBER
       - DATE=`date`
       - echo Build completed on $DATE
-      - sed -i 's#AWS_ECR_URI#'"$AWS_ECR_URI"'#' ./eks-app-deploy.yml
       - kubectl apply -f ./member
