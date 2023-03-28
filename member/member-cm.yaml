@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: member-cm
+  namespace: ticketaka-member
+data:
+  SERVER_PORT: "8081"
+  SPRING_DATASOURCE_URL: jdbc:mariadb://member-db-svc:3306/member?serverTimezone=Asia/Seoul
+  RESERVATION_URL: reservation-svc.reservation.svc.cluster.local
+  RESERVATION_PORT: "8083"
+  SPRING_DATASOURCE_USERNAME: user
+  SPRING_DATASOURCE_PASSWORD: user

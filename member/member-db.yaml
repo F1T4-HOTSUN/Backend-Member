@@ -1,0 +1,111 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: member-db-pv
+  namespace: ticketaka-member
+  labels:
+    type: db
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/member-db-storage/"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: member-db-pvc
+  namespace: ticketaka-member
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: member-db-svc
+  namespace: ticketaka-member
+  labels:
+    type: db
+spec:
+  type: NodePort
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    type: db
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: member-db-initdb-config
+  namespace: ticketaka-member
+data:
+  init.sql: |
+    CREATE TABLE `member` (`member_id` int NOT NULL,`member_name` varchar(20) NOT NULL,`member_email` varchar(30) NOT NULL,`member_password` varchar(20) NOT NULL,`member_birth` date NOT NULL,`member_phone` varchar(20) NOT NULL,`member_gender` char(8) NOT NULL,`member_role` varchar(10) NOT NULL,PRIMARY KEY (`member_id`),UNIQUE KEY `member_email_UNIQUE` (`member_email`));
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    type: db
+  name: member-db
+  namespace: ticketaka-member
+spec:
+  replicas: 1
+  strategy:
+    type:  Recreate
+  selector:
+    matchLabels:
+      type: db
+  template:
+    metadata:
+      labels:
+        type: db
+    spec:
+      containers:
+      - image: mariadb:10.7.8-focal
+        name: member-db
+        args:
+        - --character-set-server=utf8
+        - --collation-server=utf8_general_ci
+        - --explicit_defaults_for_timestamp=1
+        env:
+        - name: MARIADB_ROOT_PASSWORD
+          value: "1234"
+        - name: MARIADB_DATABASE
+          value: member
+        - name: MARIADB_USER
+          value: user
+        - name: MARIADB_ROOT_HOST
+          value: '%'
+        - name: MARIADB_PASSWORD
+          value: user
+        ports:
+        - containerPort: 3306
+          name: member-db
+        volumeMounts:
+        - name: tz-seoul
+          mountPath: /etc/localtime
+        - name: roll-db-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: tz-seoul
+        hostPath:
+          path: /usr/share/zoneinfo/Asia/Seoul
+      - name: roll-db-storage
+        persistentVolumeClaim:
+          claimName: member-db-pvc
+      - name: member-db-initdb
+        configMap:
+          name: member-db-initdb-config

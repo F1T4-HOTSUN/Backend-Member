@@ -1,0 +1,51 @@
+phases:
+  install:
+    commands:
+      - echo Install Kubectl
+      - echo ---------------------------------
+      - curl -o kubectl curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.24.10/2023-01-30/bin/linux/amd64/kubectl
+      - chmod +x ./kubectl
+      - mv ./kubectl /usr/local/bin/kubectl
+      - mkdir ~/.kube
+      - aws sts get-caller-identity
+      - aws eks --region ap-northeast-2 update-kubeconfig --name {cluster_name}
+      - echo ---------------------------------
+  pre_build:
+    commands:
+      - echo ENV Values
+      - echo ---------------------------------
+      - echo $AWS_DEFAULT_REGION
+      - echo $AWS_ACCOUNT_ID
+      - echo $IMAGE_REPO_NAME
+      - echo $IMAGE_TAG
+      - echo $CODEBUILD_BUILD_NUMBER
+      - echo ---------------------------------
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Application Build
+      - echo ---------------------------------
+      - echo GO Build Start
+      - echo Go Build Code In here
+      - echo GO Build Stop
+      - echo ---------------------------------
+      - echo Start Docker
+      - docker version
+      - echo ---------------------------------
+      - echo Building the Docker image...
+      - echo ---------------------------------
+      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG-$CODEBUILD_BUILD_NUMBER .
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG-$CODEBUILD_BUILD_NUMBER $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG-$CODEBUILD_BUILD_NUMBER
+      - echo ---------------------------------
+      - echo Pushing the Docker image...
+      - echo ---------------------------------
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG-$CODEBUILD_BUILD_NUMBER
+  post_build:
+    commands:
+      - AWS_ECR_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG-$CODEBUILD_BUILD_NUMBER
+      - DATE=`date`
+      - echo Build completed on $DATE
+      - sed -i 's#AWS_ECR_URI#'"$AWS_ECR_URI"'#' ./eks-app-deploy.yml
+      - kubectl apply -f ./member
