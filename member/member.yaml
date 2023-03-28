@@ -52,7 +52,7 @@ spec:
             secretKeyRef:
               name: member-secret
               key: PRIVATE_KEY
-        image: roheejae/ticketaka-member:v0.0.14
+        image: AWS_ECR_URI
         name: member
         ports:
         - containerPort: 8081

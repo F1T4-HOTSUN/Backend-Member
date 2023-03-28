@@ -50,4 +50,5 @@ phases:
       - AWS_ECR_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG-$CODEBUILD_BUILD_NUMBER
       - DATE=`date`
       - echo Build completed on $DATE
+      - sed -i 's#AWS_ECR_URI#'"$AWS_ECR_URI"'#' ./member/member.yaml
       - kubectl apply -f member
