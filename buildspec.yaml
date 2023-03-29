@@ -51,4 +51,8 @@ phases:
       - DATE=`date`
       - echo Build completed on $DATE
       - sed -i 's#AWS_ECR_URI#'"$AWS_ECR_URI"'#' ./member/member.yaml
-      - kubectl apply -f ./member
+      - kubectl apply -f ./member/ns-member.yaml
+      - kubectl apply -f ./member/member-secret.yaml
+      - kubectl apply -f ./member/member-cm.yaml
+      - kubectl apply -f ./member/member-db.yaml
+      - kubectl apply -f ./member/member.yaml
