@@ -11,7 +11,7 @@ phases:
       - mv ./kubectl /usr/local/bin/kubectl
       - mkdir ~/.kube
       - aws sts get-caller-identity
-      - aws eks --region ap-northeast-2 update-kubeconfig --name ticketaka-cluster
+      - aws eks --region ap-northeast-2 update-kubeconfig --name arn:aws:eks:ap-northeast-2:040179484449:cluster/ticketaka-cluster
       - kubectl get po -n kube-system
       - echo ---------------------------------
   pre_build:
