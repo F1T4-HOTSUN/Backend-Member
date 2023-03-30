@@ -10,6 +10,9 @@ spec:
     storage: 10Gi
   accessModes:
     - ReadWriteMany
+  awsElasticBlockStore:
+    fsType: gp2
+    volumeID: vol-060e3e705307fe0df
   hostPath:
     path: "/member-db-storage/"
 
