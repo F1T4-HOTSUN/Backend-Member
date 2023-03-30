@@ -28,7 +28,7 @@ spec:
   resources:
     requests:
       storage: 5Gi
-
+  volumeName: member-db-pv
 
 ---
 apiVersion: v1
