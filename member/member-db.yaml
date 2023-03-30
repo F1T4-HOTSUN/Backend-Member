@@ -13,6 +13,7 @@ spec:
   awsElasticBlockStore:
     fsType: gp2
     volumeID: vol-060e3e705307fe0df
+  volumeMode: Filesystem
   hostPath:
     path: "/member-db-storage/"
 
@@ -29,6 +30,7 @@ spec:
     requests:
       storage: 5Gi
   volumeName: member-db-pv
+  volumeMode: Filesystem
 
 ---
 apiVersion: v1
