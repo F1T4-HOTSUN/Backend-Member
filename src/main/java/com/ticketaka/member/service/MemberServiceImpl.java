@@ -49,7 +49,7 @@ public class MemberServiceImpl implements MemberService{
         member.getId();
         String accessToken = jwtUtils.generateAccessToken(member);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("X-Authorization",accessToken);
+        headers.add("Authorization",accessToken);
         return LoginResponseDto.builder().memberId(member.getId()).role(member.getRole()).headers(headers).build();
     }
 
