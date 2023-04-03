@@ -24,7 +24,8 @@ public class ReservationController {
     // ??
 
     @PostMapping("/create")
-    public BaseResponse reservation(@RequestHeader("memberid") Long memberId, @RequestBody ReservationDTO dto) {
+    public BaseResponse reservation(@RequestHeader Map<String,String> header, @RequestBody ReservationDTO dto) {
+        Long memberId = Long.parseLong(header.get("x-istio-jwt-sub"));
         reservationService.reservation(memberId, dto);
         return new BaseResponse(StatusCode.OK);
     }
