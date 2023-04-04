@@ -12,7 +12,7 @@ public interface ReservationFeignClient {
 
 
     @PostMapping("/create")
-    BaseResponse reservation(@RequestHeader("memberid") Long memberId, @RequestBody ReservationDTO dto);
+    BaseResponse reservation(@RequestHeader("x-istio-jwt-sub") Long memberId, @RequestBody ReservationDTO dto);
 
     @GetMapping("/lists/{member_id}")
     BaseResponse reservationList(@PathVariable("member_id") Long memberId);
