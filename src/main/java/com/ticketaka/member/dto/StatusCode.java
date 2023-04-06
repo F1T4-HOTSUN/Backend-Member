@@ -10,6 +10,7 @@ public enum StatusCode {
     OK(200, "성공"),
     // 존재하지 않는 회원
     NO_MEBMER(404,"존재하지 않는 회원 정보입니다"),
+    INVALID_NUM(401,"잘못된 인증번호 입니다"),
     // email 중복
     DUPLICATE_EMAIL(409, "중복된 이메일 입니다"),
     DUPLICATE_MEMBER(409,"이미 존재하는 회원입니다");

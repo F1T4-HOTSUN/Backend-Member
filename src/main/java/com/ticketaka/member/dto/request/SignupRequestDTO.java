@@ -14,7 +14,7 @@ import java.util.Locale;
 @Slf4j
 @Data
 @Builder
-public class SignupRequestDto {
+public class SignupRequestDTO {
     private String email;
     private String password;
     private String name;
