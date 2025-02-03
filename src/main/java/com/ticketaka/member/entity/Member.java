@@ -48,7 +48,7 @@ public class Member {
 
     public InfoResponseDto toInfoResponseDto(){
         return InfoResponseDto.builder()
-                .name(name+" 버전2 ")
+                .name(name)
                 .email(email)
                 .phone(phone)
                 .birth(birth)
