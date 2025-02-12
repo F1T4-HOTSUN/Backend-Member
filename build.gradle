@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.8'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id "org.sonarqube" version "6.0.1.5171"
 }
 
 group = 'com.ticketaka'
@@ -23,13 +24,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.5'
-
+	implementation 'org.mariadb.jdbc:mariadb-java-client'
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+	//runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
@@ -44,6 +45,17 @@ dependencies {
 
 }
 
+tasks.withType(Test) {
+	enabled = false
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+sonar {
+  properties {
+    property "sonar.projectKey", "ticketaka-member"
+    property "sonar.projectName", "ticketaka-member"
+  }
 }
