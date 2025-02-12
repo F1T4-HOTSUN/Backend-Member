@@ -7,6 +7,6 @@ data:
   SERVER_PORT: "8081"
   SPRING_DATASOURCE_URL: jdbc:mariadb://member-db-svc.ticketaka-member.svc.cluster.local:3306/member?serverTimezone=Asia/Seoul
   RESERVATION_URL: reservation-svc.reservation.svc.cluster.local
-  RESERVATION_PORT: "8083"
+  RESERVATION_PORT: "8080"
   SPRING_DATASOURCE_USERNAME: user
   SPRING_DATASOURCE_PASSWORD: user
