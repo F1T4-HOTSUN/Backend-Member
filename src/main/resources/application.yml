@@ -11,7 +11,6 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     database: mysql
-    open-in-view: false
     generate-ddl: false
     show-sql: true
     hibernate:
