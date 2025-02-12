@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJoYXJib3IuaG90c3VuLnN0b3JlIjp7InVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IlBAc3N3MHJkIUAiLCJhdXRoIjoiWVdSdGFXNDZVRUJ6YzNjd2NtUWhRQT09In19fQ==
+kind: Secret
+metadata:
+  creationTimestamp: null
+  name: regcred
+  namespace: ticketaka-member
+type: kubernetes.io/dockerconfigjson

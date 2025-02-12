@@ -15,6 +15,8 @@ spec:
       labels:
         app: member
     spec:
+      imagePullSecrets:
+      - name: regcred
       containers:
       - env:
         - name: SERVER_PORT
@@ -52,7 +54,7 @@ spec:
             secretKeyRef:
               name: member-secret
               key: PRIVATE_KEY
-        image: AWS_ECR_URI
+        image: harbor.hotsun.store/ticketaka/ticketaka-member:v0.0.4
         name: member
         ports:
         - containerPort: 8081
