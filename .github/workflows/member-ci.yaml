@@ -43,6 +43,43 @@ jobs:
           chmod +x ./gradlew
           ./gradlew build sonar --info
 
+      # Dependency Check (Java 프로젝트)
+      - name: Dependency Check (Java)
+        uses: dependency-check/Dependency-Check_Action@main
+        env:
+          JAVA_HOME: /opt/jdk
+        id: Depcheck
+        with:
+          project: "Ticketaka"
+          path: "./"
+          format: "HTML"
+          # args: >
+            # --failOnCVSS 7
+            # --enableRetired
+
+      - name: Upload Test results
+        uses: actions/upload-artifact@master
+        with:
+           name: Depcheck report
+           path: ${{github.workspace}}/reports
+
+      # Trivy 사용해 Harbor에 Push한 이미지 취약점 검사
+      - name: Run Trivy vulnerability scanner (pre-build)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: 'CRITICAL'
+
+      # 취약점이 발견되면 배포 중단
+      - name: Check Trivy Scan Result
+        if: failure()
+        run: |
+          echo "보안 취약점이 감지되었습니다. 배포를 중단합니다."
+          exit 1
+
       # Auto-tagging 및 Release 생성
       - name: Bump version and push tag
         id: tag_version
@@ -70,16 +107,32 @@ jobs:
       - name: Login to Harbor
         run: |
           echo "${{ secrets.HARBOR_PASSWORD }}" | docker login harbor.hotsun.store -u "${{ secrets.HARBOR_USERNAME }}" --password-stdin
+
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Build and push to Harbor
-        uses: docker/build-push-action@v2
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and Push Docker Image
+        id: build-and-push
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64
           push: true
           tags: harbor.hotsun.store/ticketaka/ticketaka-member:${{ steps.tag_version.outputs.new_tag }}
+
+      - name: Get Image Digest
+        run: echo "DIGEST=${{ steps.build-and-push.outputs.digest }}" >> $GITHUB_ENV
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.8.0
+
+      - name: Sign Image with Cosign (Using Digest)
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        run: |
+          cosign sign --yes --key env://COSIGN_PRIVATE_KEY harbor.hotsun.store/ticketaka/ticketaka-member@${{ env.DIGEST }}
       
       # Kubernetes 배포를 위한 Kustomize 업데이트
       - name: Checkout for Kustomize repository
